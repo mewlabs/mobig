@@ -1384,7 +1384,7 @@ class Internal extends RequestCollection
 
                 throw new \RuntimeException(sprintf(
                     'All configuration retries have failed. Last error: %s',
-                    $lastError
+                    $lastError->getMessage()
                 ));
             }
 
