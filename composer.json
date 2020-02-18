@@ -1,30 +1,19 @@
 {
-    "name": "mewlabs/instagram-api",
-    "description": "Instagram's private API for PHP",
+    "name": "mewlabs/mobig",
+    "description": "mobig",
     "license": [
         "RPL-1.5",
         "proprietary"
     ],
     "keywords": [
-        "Instagram",
-        "Private",
-        "API",
         "PHP"
     ],
     "support": {
-        "issues": "https://github.com/mgp25/Instagram-API/issues",
-        "wiki": "https://github.com/mgp25/Instagram-API/wiki",
-        "source": "https://github.com/mgp25/Instagram-API/"
     },
     "authors": [
         {
-            "name": "mgp25",
-            "email": "me@mgp25.com",
-            "role": "Founder"
-        },
-        {
-            "name": "SteveJobzniak",
-            "homepage": "https://github.com/SteveJobzniak",
+            "name": "mewlabs",
+            "email": "mewlabs@gmail.com",
             "role": "Developer"
         }
     ],
