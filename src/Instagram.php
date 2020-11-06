@@ -1083,7 +1083,7 @@ class Instagram implements ExperimentsInterface
                 $resp = $this->timeline->getTimelineFeed(null, [
                     'is_pull_to_refresh' => $isSessionExpired ? null : mt_rand(1, 3) < 3,
                 ]);
-                $getTimelineFeedResponse = ($resp->status ?? null) === 'ok' ?: null;
+                $getTimelineFeedResponse = $resp->getStatus() === 'ok' ? $resp : null;
             } catch (\InstagramAPI\Exception\LoginRequiredException $e) {
                 // If our session cookies are expired, we were now told to login,
                 // so handle that by running a forced relogin in that case!
