@@ -1021,6 +1021,8 @@ class Instagram implements ExperimentsInterface
             throw new \InvalidArgumentException("Instagram's app state refresh interval is NOT allowed to be higher than 6 hours, and the lower the better!");
         }
 
+        $getTimelineFeedResponse = null;
+
         // SUPER IMPORTANT:
         //
         // STOP trying to ask us to remove this code section!
@@ -1078,9 +1080,10 @@ class Instagram implements ExperimentsInterface
             // Act like a real logged in app client refreshing its news timeline.
             // This also lets us detect if we're still logged in with a valid session.
             try {
-                $this->timeline->getTimelineFeed(null, [
+                $resp = $this->timeline->getTimelineFeed(null, [
                     'is_pull_to_refresh' => $isSessionExpired ? null : mt_rand(1, 3) < 3,
                 ]);
+                $getTimelineFeedResponse = ($resp->status ?? null) === 'ok' ?: null;
             } catch (\InstagramAPI\Exception\LoginRequiredException $e) {
                 // If our session cookies are expired, we were now told to login,
                 // so handle that by running a forced relogin in that case!
@@ -1130,6 +1133,9 @@ class Instagram implements ExperimentsInterface
         // cookies to the storage, to ensure that the storage doesn't miss them
         // in case something bad happens to PHP after this moment.
         $this->client->saveCookieJar();
+
+
+        return $getTimelineFeedResponse;
     }
 
     /**
