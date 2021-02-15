@@ -15,6 +15,8 @@ use LazyJsonMapper\Exception\LazyJsonMapperException;
 use Psr\Http\Message\RequestInterface as HttpRequestInterface;
 use Psr\Http\Message\ResponseInterface as HttpResponseInterface;
 use function GuzzleHttp\Psr7\modify_request;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * This class handles core API network communication.
@@ -119,6 +121,11 @@ class Client
     private $_resetConnection;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param \InstagramAPI\Instagram $parent
@@ -132,6 +139,8 @@ class Client
         $this->_verifySSL = true;
         $this->_proxy = null;
 
+        $this->logger = new NullLogger();
+
         // Create a default handler stack with Guzzle's auto-selected "best
         // possible transfer handler for the user's system", and with all of
         // Guzzle's default middleware (cookie jar support, etc).
@@ -144,13 +153,18 @@ class Client
         $this->_zeroRating = new ZeroRating();
         $stack->push($this->_zeroRating, 'zero_rewrite');
 
+        $middlewareFactory = new MiddlewareFactory();
+        $middlewareFactory->setLogger($this->logger);
+
+        $stack->push($middlewareFactory->retry());
+
         // Default request options (immutable after client creation).
         $this->_guzzleClient = new GuzzleClient([
             'handler'         => $stack, // Our middleware is now injected.
             'allow_redirects' => [
                 'max' => 8, // Allow up to eight redirects (that's plenty).
             ],
-            'connect_timeout' => 30.0, // Give up trying to connect after 30s.
+            'connect_timeout' => 5.0, // Give up trying to connect after 30s.
             'decode_content'  => true, // Decode gzip/deflate/etc HTTP responses.
             'timeout'         => 240.0, // Maximum per-request time (seconds).
             // Tells Guzzle to stop throwing exceptions on non-"2xx" HTTP codes,
