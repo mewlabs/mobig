@@ -58,12 +58,9 @@ class MiddlewareFactory implements LoggerAwareInterface
      */
     private function getRetryDelay()
     {
-        return function () {
-            return 1000;
+        return function ($numberOfRetries) {
+            return 1000;// * $numberOfRetries;
         };
-//        return function ($numberOfRetries) {
-//            return 1000 * $numberOfRetries;
-//        };
     }
 
     /**
@@ -80,13 +77,20 @@ class MiddlewareFactory implements LoggerAwareInterface
             $shouldRetry = false;
 
             // Retry connection exceptions
-            if ($exception instanceof ConnectException && $exception->getCode() === 28) {
+            if ($exception instanceof ConnectException && strpos($exception->getMessage(), 'cURL error 28: Operation timed out') !== false) {
                 $shouldRetry = true;
+            }
+
+            if ($response) {
+                // Retry on server errors
+                if ($response->getStatusCode() >= 500) {
+                    return true;
+                }
             }
 
             // Log if we are retrying
             if ($shouldRetry) {
-                $this->logger->warning(sprintf('Retrying %s %s %s/5, %s', $request->getMethod(), $request->getUri(), $retries + 1, $response
+                $this->logger->warning(sprintf('Retrying %s %s %s/10, %s', $request->getMethod(), $request->getUri(), $retries + 1, $response
                     ? 'status code: ' . $response->getStatusCode() : $exception->getMessage()));
             }
 

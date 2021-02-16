@@ -156,7 +156,7 @@ class Client
         $middlewareFactory = new MiddlewareFactory();
         $middlewareFactory->setLogger($this->logger);
 
-        $stack->push($middlewareFactory->retry());
+        $stack->push($middlewareFactory->retry(true));
 
         // Default request options (immutable after client creation).
         $this->_guzzleClient = new GuzzleClient([
