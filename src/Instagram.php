@@ -934,17 +934,17 @@ class Instagram implements ExperimentsInterface
     protected function _sendPreLoginFlow()
     {
         // Reset zero rating rewrite rules.
-        $this->client->zeroRating()->reset();
+//        $this->client->zeroRating()->reset();
         // Calling this non-token API will put a csrftoken in our cookie
         // jar. We must do this before any functions that require a token.
-        $this->internal->readMsisdnHeader('ig_select_app');
-        $this->internal->syncDeviceFeatures(true);
-        $this->internal->sendLauncherSync(true);
-        $this->internal->logAttribution();
+//        $this->internal->readMsisdnHeader('ig_select_app');
+//        $this->internal->syncDeviceFeatures(true);
+//        $this->internal->sendLauncherSync(true);
+//        $this->internal->logAttribution();
         // We must fetch new token here, because it updates rewrite rules.
-        $this->internal->fetchZeroRatingToken();
+//        $this->internal->fetchZeroRatingToken();
         // It must be at the end, because it's called when a user taps on login input.
-        $this->account->setContactPointPrefill('prefill');
+//        $this->account->setContactPointPrefill('prefill');
     }
 
     /**
@@ -1042,35 +1042,35 @@ class Instagram implements ExperimentsInterface
         // You have been warned.
         if ($justLoggedIn) {
             // Reset zero rating rewrite rules.
-            $this->client->zeroRating()->reset();
+//            $this->client->zeroRating()->reset();
             // Perform the "user has just done a full login" API flow.
-            $this->internal->sendLauncherSync(false);
-            $this->internal->syncUserFeatures();
+//            $this->internal->sendLauncherSync(false);
+//            $this->internal->syncUserFeatures();
             $this->timeline->getTimelineFeed(null, ['recovered_from_crash' => true]);
-            $this->story->getReelsTrayFeed();
-            $this->discover->getSuggestedSearches('users');
-            $this->discover->getRecentSearches();
-            $this->discover->getSuggestedSearches('blended');
+//            $this->story->getReelsTrayFeed();
+//            $this->discover->getSuggestedSearches('users');
+//            $this->discover->getRecentSearches();
+//            $this->discover->getSuggestedSearches('blended');
             //$this->story->getReelsMediaFeed();
             // We must fetch new token here, because it updates rewrite rules.
-            $this->internal->fetchZeroRatingToken();
-            $this->_registerPushChannels();
-            $this->direct->getRankedRecipients('reshare', true);
-            $this->direct->getRankedRecipients('raven', true);
-            $this->direct->getInbox();
-            $this->direct->getPresences();
-            $this->people->getRecentActivityInbox();
-            if ((int) $this->getExperimentParam('ig_android_loom_universe', 'cpu_sampling_rate_ms', 0) > 0) {
-                $this->internal->getLoomFetchConfig();
-            }
-            $this->internal->getProfileNotice();
-            $this->media->getBlockedMedia();
-            $this->people->getBootstrapUsers();
+//            $this->internal->fetchZeroRatingToken();
+//            $this->_registerPushChannels();
+//            $this->direct->getRankedRecipients('reshare', true);
+//            $this->direct->getRankedRecipients('raven', true);
+//            $this->direct->getInbox();
+//            $this->direct->getPresences();
+//            $this->people->getRecentActivityInbox();
+//            if ((int) $this->getExperimentParam('ig_android_loom_universe', 'cpu_sampling_rate_ms', 0) > 0) {
+//                $this->internal->getLoomFetchConfig();
+//            }
+//            $this->internal->getProfileNotice();
+//            $this->media->getBlockedMedia();
+//            $this->people->getBootstrapUsers();
             //$this->internal->getQPCooldowns();
-            $this->discover->getExploreFeed(null, true);
+//            $this->discover->getExploreFeed(null, true);
             //$this->internal->getMegaphoneLog();
-            $this->internal->getQPFetch();
-            $this->internal->getFacebookOTA();
+//            $this->internal->getQPFetch();
+//            $this->internal->getFacebookOTA();
         } else {
             $lastLoginTime = $this->settings->get('last_login');
             $isSessionExpired = $lastLoginTime === null || (time() - $lastLoginTime) > $appRefreshInterval;
@@ -1097,33 +1097,33 @@ class Instagram implements ExperimentsInterface
                 $this->settings->set('session_id', $this->session_id);
 
                 // Do the rest of the "user is re-opening the app" API flow...
-                $this->people->getBootstrapUsers();
-                $this->story->getReelsTrayFeed();
-                $this->direct->getRankedRecipients('reshare', true);
-                $this->direct->getRankedRecipients('raven', true);
-                $this->_registerPushChannels();
+//                $this->people->getBootstrapUsers();
+//                $this->story->getReelsTrayFeed();
+//                $this->direct->getRankedRecipients('reshare', true);
+//                $this->direct->getRankedRecipients('raven', true);
+//                $this->_registerPushChannels();
                 //$this->internal->getMegaphoneLog();
-                $this->direct->getInbox();
-                $this->direct->getPresences();
-                $this->people->getRecentActivityInbox();
-                $this->internal->getProfileNotice();
-                $this->discover->getExploreFeed();
+//                $this->direct->getInbox();
+//                $this->direct->getPresences();
+//                $this->people->getRecentActivityInbox();
+//                $this->internal->getProfileNotice();
+//                $this->discover->getExploreFeed();
             }
 
             // Users normally resume their sessions, meaning that their
             // experiments never get synced and updated. So sync periodically.
-            $lastExperimentsTime = $this->settings->get('last_experiments');
-            if ($lastExperimentsTime === null || (time() - $lastExperimentsTime) > self::EXPERIMENTS_REFRESH) {
-                $this->internal->syncUserFeatures();
-                $this->internal->syncDeviceFeatures();
-            }
+//            $lastExperimentsTime = $this->settings->get('last_experiments');
+//            if ($lastExperimentsTime === null || (time() - $lastExperimentsTime) > self::EXPERIMENTS_REFRESH) {
+//                $this->internal->syncUserFeatures();
+//                $this->internal->syncDeviceFeatures();
+//            }
 
             // Update zero rating token when it has been expired.
-            $expired = time() - (int) $this->settings->get('zr_expires');
-            if ($expired > 0) {
-                $this->client->zeroRating()->reset();
-                $this->internal->fetchZeroRatingToken($expired > 7200 ? 'token_stale' : 'token_expired');
-            }
+//            $expired = time() - (int) $this->settings->get('zr_expires');
+//            if ($expired > 0) {
+//                $this->client->zeroRating()->reset();
+//                $this->internal->fetchZeroRatingToken($expired > 7200 ? 'token_stale' : 'token_expired');
+//            }
         }
 
         // We've now performed a login or resumed a session. Forcibly write our
