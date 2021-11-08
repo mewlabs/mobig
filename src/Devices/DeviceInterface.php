@@ -19,6 +19,16 @@ interface DeviceInterface
     public function getUserAgent();
 
     /**
+     * Set the HTTP user-agent string.
+     *
+     * @param string $appVersion
+     * @param string $versionCode
+     *
+     * @return void
+     */
+    public function setUserAgent($appVersion, $versionCode);
+
+    /**
      * Get the Facebook user-agent string.
      *
      * @param string $appName Application name.

@@ -92,4 +92,16 @@ class Creative extends RequestCollection
             ->addPost('supported_capabilities_new', json_encode(Constants::SUPPORTED_CAPABILITIES))
             ->getResponse(new Response\FaceEffectsResponse());
     }
+
+    /**
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\UnlockableStickerNuxResponse
+     */
+    public function getUnlockableStickerNux()
+    {
+        return $this->ig->request('creatives/get_unlockable_sticker_nux/')
+            ->addHeader('x-ig-nav-chain', '04d:feed_timeline:1')
+            ->getResponse(new Response\UnlockableStickerNuxResponse());
+    }
 }

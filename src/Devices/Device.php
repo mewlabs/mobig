@@ -2,6 +2,8 @@
 
 namespace InstagramAPI\Devices;
 
+use InstagramAPI\Constants;
+
 /**
  * Android hardware device representation.
  *
@@ -193,6 +195,12 @@ class Device implements DeviceInterface
     public function getUserAgent()
     {
         return $this->_userAgent;
+    }
+
+    /** {@inheritdoc} */
+    public function setUserAgent($appVersion, $versionCode)
+    {
+        $this->_userAgent = UserAgent::buildUserAgent($appVersion, Constants::USER_AGENT_LOCALE, $this, $versionCode);
     }
 
     /** {@inheritdoc} */

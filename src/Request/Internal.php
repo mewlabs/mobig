@@ -97,6 +97,10 @@ class Internal extends RequestCollection
             );
         }
 
+        if (isset($externalMetadata['link']) && $targetFeed == Constants::FEED_STORY) {
+            $this->ig->creative->getUnlockableStickerNux();
+        }
+
         // Perform the upload.
         $this->uploadPhotoData($targetFeed, $internalMetadata);
 
@@ -292,9 +296,29 @@ class Internal extends RequestCollection
                     ->addPost('client_timestamp', (string) (time() - mt_rand(3, 10)))
                     ->addPost('upload_id', $uploadId);
 
-                if (is_string($link) && Utils::hasValidWebURLSyntax($link)) {
-                    $story_cta = '[{"links":[{"linkType": 1, "webUri":'.json_encode($link).', "androidClass": "", "package": "", "deeplinkUri": "", "callToActionTitle": "", "redirectUri": null, "leadGenFormId": "", "igUserId": "", "appInstallObjectiveInvalidationBehavior": null}]}]';
-                    $request->addPost('story_cta', $story_cta);
+                if (!empty($link) && is_string($link['link']) && Utils::hasValidWebURLSyntax($link['link'])) {
+                    $linkArray = [
+                        'x'                => $link['x'],
+                        'y'                => $link['y'],
+                        'z'                => 0,
+                        'width'            => $link['width'],
+                        'height'           => $link['height'],
+                        'rotation'         => 0.0,
+                        'type'             => 'story_link',
+                        'link_type'        => 'web',
+                        'url'              => $link['link'],
+                        'selected_index'   => 0,
+                        'is_sticker'       => true,
+                        'tap_state'        => 0,
+                        'tap_state_str_id' => 'link_sticker_default',
+                    ];
+
+                    $request
+                        ->addPost('tap_models', json_encode([$linkArray], JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES))
+                        ->addPost('story_sticker_ids', 'link_sticker_default')
+                        ->addPost('client_shared_at', (string) time())
+                        ->addPost('client_timestamp', (string) (time() - mt_rand(3, 10)))
+                    ;
                 }
                 if ($hashtags !== null && $captionText !== '') {
                     Utils::throwIfInvalidStoryHashtags($captionText, $hashtags);
