@@ -67,9 +67,9 @@ class Timeline extends RequestCollection
      *
      * @param array $media            Array of image/video files and their per-file
      *                                metadata (type, file, and optionally
-     *                                usertags). The "type" must be "photo" or
+     *                                usertags, product_tags). The "type" must be "photo" or
      *                                "video". The "file" must be its disk path.
-     *                                And the optional "usertags" can only be
+     *                                And the optional "usertags" or "product_tags" can only be
      *                                used on PHOTOS, never on videos.
      * @param array $externalMetadata (optional) User-provided metadata key-value pairs
      *                                for the album itself (its caption, location, etc).
@@ -113,6 +113,11 @@ class Timeline extends RequestCollection
             // If usertags are provided, verify that the entries are valid.
             if (isset($item['usertags'])) {
                 Utils::throwIfInvalidUsertags($item['usertags']);
+            }
+
+            // If usertags are provided, verify that the entries are valid.
+            if (isset($item['product_tags'])) {
+                Utils::throwIfInvalidProductTags($item['product_tags']);
             }
 
             // Pre-process media details and throw if not allowed on Instagram.

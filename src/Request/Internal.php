@@ -215,7 +215,7 @@ class Internal extends RequestCollection
         $locationSticker = (isset($externalMetadata['location_sticker']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['location_sticker'] : null;
         /** @var array|null Array of usertagging instructions, in the format
          * [['position'=>[0.5,0.5], 'user_id'=>'123'], ...]. ONLY FOR TIMELINE PHOTOS! */
-        $usertags = (isset($externalMetadata['usertags']) && $targetFeed == Constants::FEED_TIMELINE) ? $externalMetadata['usertags'] : null;
+        $usertags = (isset($externalMetadata['usertags']) && ($targetFeed == Constants::FEED_TIMELINE || $targetFeed == Constants::FEED_STORY)) ? $externalMetadata['usertags'] : null;
         /** @var string|null Link to attach to the media. ONLY USED FOR STORY MEDIA,
          * AND YOU MUST HAVE A BUSINESS INSTAGRAM ACCOUNT TO POST A STORY LINK! */
         $link = (isset($externalMetadata['link']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['link'] : null;
@@ -231,7 +231,7 @@ class Internal extends RequestCollection
         /** @var array Attached media used to share media to story feed. ONLY STORY MEDIA! */
         $attachedMedia = (isset($externalMetadata['attached_media']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['attached_media'] : null;
         /** @var array Product Tags to use for the media. ONLY FOR TIMELINE PHOTOS! */
-        $productTags = (isset($externalMetadata['product_tags']) && $targetFeed == Constants::FEED_TIMELINE) ? $externalMetadata['product_tags'] : null;
+        $productTags = (isset($externalMetadata['product_tags']) && ($targetFeed == Constants::FEED_TIMELINE || $targetFeed == Constants::FEED_STORY)) ? $externalMetadata['product_tags'] : null;
 
         // Fix very bad external user-metadata values.
         if (!is_string($captionText)) {
@@ -295,6 +295,15 @@ class Internal extends RequestCollection
                     ->addPost('configure_mode', '1')
                     ->addPost('client_timestamp', (string) (time() - mt_rand(3, 10)))
                     ->addPost('upload_id', $uploadId);
+
+                if ($usertags !== null) {
+                    Utils::throwIfInvalidUsertags($usertags);
+                    $request->addPost('usertags', json_encode($usertags));
+                }
+                if ($productTags !== null) {
+                    Utils::throwIfInvalidProductTags($productTags);
+                    $request->addPost('product_tags', json_encode($productTags));
+                }
 
                 if (!empty($link) && is_string($link['link']) && Utils::hasValidWebURLSyntax($link['link'])) {
                     $linkArray = [
@@ -896,6 +905,12 @@ class Internal extends RequestCollection
                 if (isset($item['usertags'])) {
                     // NOTE: These usertags were validated in Timeline::uploadAlbum.
                     $photoConfig['usertags'] = json_encode($item['usertags']);
+                }
+
+                // This product_tags per-file EXTERNAL metadata is only supported for PHOTOS!
+                if (isset($item['product_tags'])) {
+                    // NOTE: These product_tags were validated in Timeline::uploadAlbum.
+                    $photoConfig['product_tags'] = json_encode($item['product_tags']);
                 }
 
                 $childrenMetadata[] = $photoConfig;
