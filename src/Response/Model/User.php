@@ -119,6 +119,9 @@ use InstagramAPI\AutoPropertyMapper;
  * @method mixed getUsertagReviewEnabled()
  * @method int getUsertagsCount()
  * @method string getZip()
+ * @method bool getIsShoppingCatalogSettingsEnabled()
+ * @method bool getIsShoppingSettingsEnabled()
+ * @method bool getIsShoppingCatalogSourceSelectionEnabled()
  * @method bool isAddressStreet()
  * @method bool isAggregatePromoteEngagement()
  * @method bool isAllowContactsSync()
@@ -231,6 +234,9 @@ use InstagramAPI\AutoPropertyMapper;
  * @method bool isUsertagReviewEnabled()
  * @method bool isUsertagsCount()
  * @method bool isZip()
+ * @method bool isShoppingCatalogSettingsEnabled()
+ * @method bool isShoppingSettingsEnabled()
+ * @method bool isShoppingCatalogSourceSelectionEnabled()
  * @method $this setAddressStreet(string $value)
  * @method $this setAggregatePromoteEngagement(mixed $value)
  * @method $this setAllowContactsSync(mixed $value)
@@ -343,6 +349,9 @@ use InstagramAPI\AutoPropertyMapper;
  * @method $this setUsertagReviewEnabled(mixed $value)
  * @method $this setUsertagsCount(int $value)
  * @method $this setZip(string $value)
+ * @method $this setIsShoppingCatalogSettingsEnabled(bool $value)
+ * @method $this setIsShoppingSettingsEnabled(bool $value)
+ * @method $this setIsShoppingCatalogSourceSelectionEnabled(bool $value)
  * @method $this unsetAddressStreet()
  * @method $this unsetAggregatePromoteEngagement()
  * @method $this unsetAllowContactsSync()
@@ -455,6 +464,9 @@ use InstagramAPI\AutoPropertyMapper;
  * @method $this unsetUsertagReviewEnabled()
  * @method $this unsetUsertagsCount()
  * @method $this unsetZip()
+ * @method $this unsetIsShoppingCatalogSettingsEnabled()
+ * @method $this unsetIsShoppingSettingsEnabled()
+ * @method $this unsetIsShoppingCatalogSourceSelectionEnabled()
  */
 class User extends AutoPropertyMapper
 {
@@ -577,5 +589,11 @@ class User extends AutoPropertyMapper
         'nametag'                             => 'Nametag',
         'school'                              => '',
         'is_bestie'                           => 'bool',
+        /**
+         * Shopping settings
+         */
+        'is_shopping_catalog_settings_enabled'         => 'bool',
+        'is_shopping_settings_enabled'                 => 'bool',
+        'is_shopping_catalog_source_selection_enabled' => 'bool',
     ];
 }

@@ -3,6 +3,7 @@
 namespace InstagramAPI\Request;
 
 use InstagramAPI\Response;
+use InstagramAPI\Signatures;
 
 /**
  * Functions related to Shopping and catalogs.
@@ -102,5 +103,55 @@ class Shopping extends RequestCollection
             ->addPost('_uuid', $this->ig->uuid)
             ->addPost('_csrftoken', $this->ig->client->getToken())
             ->getResponse(new Response\OnBoardCatalogResponse());
+    }
+
+    /**
+     * Search for Instagram product.
+     *
+     * @param string $query The product title to search for.
+     * @param null|string $maxId Next "maximum ID", used for pagination.
+     *
+     * @throws \InvalidArgumentException                  If invalid query or
+     *                                                    trying to exclude too
+     *                                                    many user IDs.
+     *
+     * @return \InstagramAPI\Response\ProductFeedResponse
+     */
+    public function editProductsFeed(
+        $query,
+        $maxId = null)
+    {
+        $request = $this->ig->request('commerce/shop_management/edit_products_feed/')
+            ->addParam('query', $query);
+
+        if ($maxId !== null) {
+            $request->addParam('max_id', $maxId);
+        }
+
+        return $request->getResponse(new Response\ProductFeedResponse());
+    }
+
+    /**
+     * Search for Instagram product.
+     *
+     * @param string $queryText The product title to search for.
+     *
+     * @throws \InstagramAPI\Exception\InstagramException
+     *
+     * @return \InstagramAPI\Response\ProductTaggingFeedResponse
+     */
+    public function taggingFeed(
+        $queryText)
+    {
+        $request = $this->ig->request('commerce/product_tagging/tagging_feed/')
+            ->addParam('client_state', '{"tagged_products":[],"tagged_collections":[],"tagged_merchants":[],"branded_content_partners":[],"tagged_users":[]}')
+            ->addParam('prior_module', 'product_tagging')
+            ->addParam('timezone_offset', date('Z'))
+            ->addParam('query_text', $queryText)
+            ->addParam('usage', 'feed_sharing')
+            ->addParam('waterfall_id', Signatures::generateUUID(true))
+            ->addParam('session_id', $this->ig->session_id);
+
+        return $request->getResponse(new Response\ProductTaggingFeedResponse());
     }
 }

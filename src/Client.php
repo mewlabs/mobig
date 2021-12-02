@@ -491,7 +491,7 @@ class Client
     {
         // Attempt to decode the raw JSON to an array.
         // Important: Special JSON decoder which handles 64-bit numbers!
-        $jsonArray = $this->api_body_decode($rawResponse, true);
+        $jsonArray = self::api_body_decode($rawResponse, true);
 
         // If the server response is not an array, it means that JSON decoding
         // failed or some other bad thing happened. So analyze the HTTP status
@@ -547,7 +547,7 @@ class Client
                 // otherwise they would appear as empty `[]` arrays in output.
                 // NOTE: Large >32-bit numbers will be transformed into strings,
                 // which helps us see which numeric values need "string" type.
-                $jsonObject = $this->api_body_decode($rawResponse, false);
+                $jsonObject = self::api_body_decode($rawResponse, false);
                 if (is_object($jsonObject)) {
                     $prettyJson = @json_encode(
                         $jsonObject,
