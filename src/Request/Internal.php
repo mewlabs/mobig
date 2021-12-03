@@ -296,14 +296,19 @@ class Internal extends RequestCollection
                     ->addPost('client_timestamp', (string) (time() - mt_rand(3, 10)))
                     ->addPost('upload_id', $uploadId);
 
-                if ($usertags !== null) {
-                    Utils::throwIfInvalidUsertags($usertags);
-                    $request->addPost('usertags', json_encode($usertags));
-                }
-                if ($productTags !== null) {
-                    Utils::throwIfInvalidProductTags($productTags);
-                    $request->addPost('product_tags', json_encode($productTags));
-                }
+                // @TODO should be changed to stickers
+// [
+//  {"x":0.3388322,"y":0.6081367,"z":1,"width":0.7037037,"height":0.09739583,"rotation":0,"type":"mention","user_id":"40182482239","is_sticker":true,"display_type":"mention_username","tap_state":0,"tap_state_str_id":"mention_sticker_gradient"},
+//  {"x":0.77761316,"y":0.70239,"z":0,"width":0.2888889,"height":0.071354166,"rotation":0,"type":"shopping_product","product_id":"3415793248531014","sticker_style":"product_item_text_sticker_vibrant","text":"LOLA","was_text_edited":false,"merchant_id":"40182482239","waterfall_id":"de1795d6-32a9-4bce-a1f3-b7cb5c5e12c1","session_instance_id":"e2a8e230-2fd3-47e4-a228-a023b63c04c5","is_sticker":true,"tap_state":0,"tap_state_str_id":"product_item_text_sticker_vibrant"}
+//]
+//                if ($usertags !== null) {
+//                    Utils::throwIfInvalidUsertags($usertags);
+//                    $request->addPost('usertags', json_encode($usertags));
+//                }
+//                if ($productTags !== null) {
+//                    Utils::throwIfInvalidProductTags($productTags);
+//                    $request->addPost('product_tags', json_encode($productTags));
+//                }
 
                 if (!empty($link) && is_string($link['link']) && Utils::hasValidWebURLSyntax($link['link'])) {
                     $linkArray = [
