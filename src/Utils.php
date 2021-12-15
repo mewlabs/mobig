@@ -839,12 +839,176 @@ class Utils
                     break;
                 case 'is_sticker':
                     if (!is_bool($v)) {
-                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for location array-key "%s".', $v, $k));
                     }
                     break;
             }
         }
         self::_throwIfInvalidStoryStickerPlacement(array_diff_key($locationSticker, array_flip($requiredKeys)), 'location');
+    }
+
+    /**
+     * Verifies if a story location sticker is valid.
+     *
+     * @param array[] $productTagSticker Array with product sticker key-value pairs.
+     *
+     * @throws \InvalidArgumentException If it's missing keys or has invalid values.
+     */
+    public static function throwIfInvalidStoryProductTagSticker(
+        array $productTagSticker)
+    {
+        $requiredKeys = ['product_id', 'vibrant_text_color', 'text', 'is_sticker'];
+        $missingKeys = array_keys(array_diff_key(['product_id' => 1, 'vibrant_text_color' => 1, 'text' => 1, 'is_sticker' => 1], $productTagSticker));
+
+        if (count($missingKeys)) {
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for product tag array.', implode(', ', $missingKeys)));
+        }
+
+        foreach ($productTagSticker as $k => $v) {
+            switch ($k) {
+                case 'product_id':
+                    if (!is_string($v) && !is_numeric($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'vibrant_text_color':
+                    if (!$v || !is_string($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'text':
+                    if (!$v || !is_string($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'is_sticker':
+                    if (!is_bool($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag array-key "%s".', $v, $k));
+                    }
+                    break;
+            }
+        }
+        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($productTagSticker, array_flip($requiredKeys)), 'product tag');
+    }
+
+    /**
+     * Verifies if a caption is valid for a hashtag and verifies an array of hashtags.
+     *
+     * @param array[] $hashtag    The array of all story hashtags.
+     *
+     * @throws \InvalidArgumentException If caption doesn't contain any hashtag,
+     *                                   or if any tags are invalid.
+     */
+    public static function throwIfInvalidStoryHashtagSticker(
+        array $hashtag)
+    {
+        $requiredKeys = ['tag_name', 'tap_state_str_id', 'is_sticker'];
+
+        $missingKeys = array_keys(array_diff_key(['tag_name' => 1, 'tap_state_str_id' => 1, 'is_sticker' => 1], $hashtag));
+        if (count($missingKeys)) {
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for hashtag array.', implode(', ', $missingKeys)));
+        }
+
+        foreach ($hashtag as $k => $v) {
+            switch ($k) {
+                case 'tag_name':
+                    // Verify that this tag exists somewhere in the caption to check.
+                    if (!$v || preg_match('/\s/', $v)) { // NOTE: UTF-8 aware.
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'tap_state_str_id':
+                    // Verify that this tag exists somewhere in the caption to check.
+                    if (!in_array($v, ['hashtag_sticker_subtle', 'hashtag_sticker_rainbow', 'hashtag_sticker_gradient'], true)) { // NOTE: UTF-8 aware.
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'is_sticker':
+                    if (!is_bool($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                    }
+                    break;
+            }
+        }
+        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($hashtag, array_flip($requiredKeys)), 'hashtag');
+    }
+
+    /**
+     * Verifies if a caption is valid for a hashtag and verifies an array of hashtags.
+     *
+     * @param array[] $mention    The array of all story hashtags.
+     *
+     * @throws \InvalidArgumentException If caption doesn't contain any hashtag,
+     *                                   or if any tags are invalid.
+     */
+    public static function throwIfInvalidStoryMentionSticker(
+        array $mention)
+    {
+        $requiredKeys = ['user_id', 'tap_state_str_id', 'is_sticker'];
+
+        $missingKeys = array_keys(array_diff_key(['user_id' => 1, 'tap_state_str_id' => 1, 'is_sticker' => 1], $mention));
+        if (count($missingKeys)) {
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for mention sticker array.', implode(', ', $missingKeys)));
+        }
+
+        foreach ($mention as $k => $v) {
+            switch ($k) {
+                case 'user_id':
+                    if (!is_int($v) && !ctype_digit($v)) {
+                        throw new \InvalidArgumentException('User ID must be an integer.');
+                    }
+                    if ($v < 0) {
+                        throw new \InvalidArgumentException('User ID must be a positive integer.');
+                    }
+                    break;
+                case 'tap_state_str_id':
+                    // Verify that this tag exists somewhere in the caption to check.
+                    if (!in_array($v, ['mention_sticker_subtle', 'mention_sticker_rainbow', 'mention_sticker_gradient'], true)) { // NOTE: UTF-8 aware.
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for mention sticker array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'is_sticker':
+                    if (!is_bool($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for mention sticker array-key "%s".', $v, $k));
+                    }
+                    break;
+            }
+        }
+        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($mention, array_flip($requiredKeys)), 'mention sticker');
+    }
+
+    /**
+     * Verifies if a story story link sticker is valid.
+     *
+     * @param array[] $linkSticker Array with story link sticker key-value pairs.
+     *
+     * @throws \InvalidArgumentException If it's missing keys or has invalid values.
+     */
+    public static function throwIfInvalidStoryLinkSticker(
+        array $linkSticker)
+    {
+        $requiredKeys = ['url', 'is_sticker'];
+        $missingKeys = array_keys(array_diff_key(['url' => 1, 'is_sticker' => 1], $linkSticker));
+
+        if (count($missingKeys)) {
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for story link array.', implode(', ', $missingKeys)));
+        }
+
+        foreach ($linkSticker as $k => $v) {
+            switch ($k) {
+                case 'url':
+                    if (!is_string($v) || self::hasValidWebURLSyntax($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story link array-key "%s".', $v, $k));
+                    }
+                    break;
+                case 'is_sticker':
+                    if (!is_bool($v)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story link array-key "%s".', $v, $k));
+                    }
+                    break;
+            }
+        }
+        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($linkSticker, array_flip($requiredKeys)), 'story link');
     }
 
     /**

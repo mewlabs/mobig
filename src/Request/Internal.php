@@ -218,7 +218,7 @@ class Internal extends RequestCollection
         $usertags = (isset($externalMetadata['usertags']) && ($targetFeed == Constants::FEED_TIMELINE || $targetFeed == Constants::FEED_STORY)) ? $externalMetadata['usertags'] : null;
         /** @var string|null Link to attach to the media. ONLY USED FOR STORY MEDIA,
          * AND YOU MUST HAVE A BUSINESS INSTAGRAM ACCOUNT TO POST A STORY LINK! */
-        $link = (isset($externalMetadata['link']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['link'] : null;
+        $storyLink = (isset($externalMetadata['story_link']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_link'] : null;
         /** @var void Photo filter. THIS DOES NOTHING! All real filters are done in the mobile app. */
         // $filter = isset($externalMetadata['filter']) ? $externalMetadata['filter'] : null;
         $filter = null; // COMMENTED OUT SO USERS UNDERSTAND THEY CAN'T USE THIS!
@@ -231,7 +231,13 @@ class Internal extends RequestCollection
         /** @var array Attached media used to share media to story feed. ONLY STORY MEDIA! */
         $attachedMedia = (isset($externalMetadata['attached_media']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['attached_media'] : null;
         /** @var array Product Tags to use for the media. ONLY FOR TIMELINE PHOTOS! */
-        $productTags = (isset($externalMetadata['product_tags']) && ($targetFeed == Constants::FEED_TIMELINE || $targetFeed == Constants::FEED_STORY)) ? $externalMetadata['product_tags'] : null;
+        $productTags = (isset($externalMetadata['product_tags']) && $targetFeed == Constants::FEED_TIMELINE) ? $externalMetadata['product_tags'] : null;
+        /** @var array Story Product Tags to use for the media. ONLY STORY MEDIA! */
+        $storyProductTagSticker = (isset($externalMetadata['story_product_tag_sticker']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_product_tag_sticker'] : null;
+        /** @var array Story Hashtag to use for the media. ONLY STORY MEDIA! */
+        $storyHashtagSticker = (isset($externalMetadata['story_hashtag_sticker']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_hashtag_sticker'] : null;
+        /** @var array Mentions to use for the media. ONLY STORY MEDIA! */
+        $storyMentionStickers = (isset($externalMetadata['story_mention_stickers']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_mention_stickers'] : null;
 
         // Fix very bad external user-metadata values.
         if (!is_string($captionText)) {
@@ -298,6 +304,7 @@ class Internal extends RequestCollection
 
                 // @TODO should be changed to stickers
 // [
+//  {"x":0.2619952,"y":0.56896406,"z":3,"width":0.4148148,"height":0.09791667,"rotation":0,"type":"hashtag","tag_name":"MIRATITA","is_sticker":true,"tap_state":1,"tap_state_str_id":"hashtag_sticker_subtle"}
 //  {"x":0.3388322,"y":0.6081367,"z":1,"width":0.7037037,"height":0.09739583,"rotation":0,"type":"mention","user_id":"40182482239","is_sticker":true,"display_type":"mention_username","tap_state":0,"tap_state_str_id":"mention_sticker_gradient"},
 //  {"x":0.77761316,"y":0.70239,"z":0,"width":0.2888889,"height":0.071354166,"rotation":0,"type":"shopping_product","product_id":"3415793248531014","sticker_style":"product_item_text_sticker_vibrant","text":"LOLA","was_text_edited":false,"merchant_id":"40182482239","waterfall_id":"de1795d6-32a9-4bce-a1f3-b7cb5c5e12c1","session_instance_id":"e2a8e230-2fd3-47e4-a228-a023b63c04c5","is_sticker":true,"tap_state":0,"tap_state_str_id":"product_item_text_sticker_vibrant"}
 //]
@@ -310,26 +317,78 @@ class Internal extends RequestCollection
 //                    $request->addPost('product_tags', json_encode($productTags));
 //                }
 
-                if (!empty($link) && is_string($link['link']) && Utils::hasValidWebURLSyntax($link['link'])) {
-                    $linkArray = [
-                        'x'                => $link['x'],
-                        'y'                => $link['y'],
-                        'z'                => 0,
-                        'width'            => $link['width'],
-                        'height'           => $link['height'],
-                        'rotation'         => 0.0,
-                        'type'             => 'story_link',
-                        'link_type'        => 'web',
-                        'url'              => $link['link'],
-                        'selected_index'   => 0,
-                        'is_sticker'       => true,
-                        'tap_state'        => 0,
-                        'tap_state_str_id' => 'link_sticker_default',
-                    ];
+                $stickers = [];
+                $stickersIds = [];
+
+                if ($storyLink !== null) {
+                    $storyLink['rotation'] = 0.0;
+                    $storyLink['type'] = 'story_link';
+                    $storyLink['link_type'] = 'web';
+                    $storyLink['selected_index'] = 0;
+                    $storyLink['is_sticker'] = true;
+                    $storyLink['tap_state'] = 0;
+                    $storyLink['tap_state_str_id'] = 'link_sticker_default';
+
+                    Utils::throwIfInvalidStoryLinkSticker($storyLink);
+
+                    $stickers[] = $storyLink;
+                    $stickersIds[] = 'link_sticker_default';
+                }
+
+                if ($storyProductTagSticker !== null) {
+                    $storyProductTagSticker['rotation'] = 0.0;
+                    $storyProductTagSticker['type'] = 'shopping_product';
+                    $storyProductTagSticker['sticker_style'] = 'product_item_text_sticker_vibrant';
+                    $storyProductTagSticker['was_text_edited'] = false;
+                    $storyProductTagSticker['is_sticker'] = true;
+                    $storyProductTagSticker['tap_state'] = 0;
+                    $storyProductTagSticker['tap_state_str_id'] = 'product_item_text_sticker_vibrant';
+                    $storyProductTagSticker['text'] = mb_strtoupper($storyProductTagSticker['text']);
+
+                    Utils::throwIfInvalidStoryProductTagSticker($storyProductTagSticker);
+
+                    $stickers[] = $storyProductTagSticker;
+                    $stickersIds[] = 'product_item_text_sticker_vibrant';
+                }
+
+                if ($storyHashtagSticker !== null) {
+                    $storyHashtagSticker['rotation'] = 0.0;
+                    $storyHashtagSticker['type'] = 'hashtag';
+                    $storyHashtagSticker['is_sticker'] = true;
+                    $storyHashtagSticker['tap_state'] = 0;
+                    $storyHashtagSticker['tag_name'] = mb_strtoupper($storyHashtagSticker['tag_name']);
+
+                    Utils::throwIfInvalidStoryHashtagSticker($storyHashtagSticker);
+
+                    $stickers[] = $storyHashtagSticker;
+                    $stickersIds[] = 'hashtag_sticker';
+                }
+
+                if ($storyMentionStickers !== null) {
+                    foreach ($storyMentionStickers as $storyMentionSticker) {
+                        $storyMentionSticker['rotation'] = 0.0;
+                        $storyMentionSticker['type'] = 'mention';
+                        $storyMentionSticker['is_sticker'] = true;
+                        $storyMentionSticker['display_type'] = 'mention_username';
+                        $storyMentionSticker['tap_state'] = 0;
+
+                        Utils::throwIfInvalidStoryMentionSticker($storyMentionSticker);
+
+                        $stickers[] = $storyMentionSticker;
+                        $stickersIds[] = 'mention_sticker';
+                    }
+                }
+
+                if ($stickers) {
+                    foreach ($stickers as $key => &$sticker) {
+                        $sticker['z'] = $key;
+                    }
+
+                    unset($sticker);
 
                     $request
-                        ->addPost('tap_models', json_encode([$linkArray], JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES))
-                        ->addPost('story_sticker_ids', 'link_sticker_default')
+                        ->addPost('tap_models', json_encode($stickers, JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES))
+                        ->addPost('story_sticker_ids', implode(',', $stickersIds))
                         ->addPost('client_shared_at', (string) time())
                         ->addPost('client_timestamp', (string) (time() - mt_rand(3, 10)))
                     ;
