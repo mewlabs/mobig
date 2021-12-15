@@ -857,38 +857,58 @@ class Utils
     public static function throwIfInvalidStoryProductTagSticker(
         array $productTagSticker)
     {
-        $requiredKeys = ['product_id', 'vibrant_text_color', 'text', 'is_sticker'];
-        $missingKeys = array_keys(array_diff_key(['product_id' => 1, 'vibrant_text_color' => 1, 'text' => 1, 'is_sticker' => 1], $productTagSticker));
+        $requiredKeys = [
+            'product_id',
+            'vibrant_text_color',
+            'text',
+            'is_sticker',
+            'type',
+            'sticker_style',
+            'was_text_edited',
+            'tap_state',
+            'tap_state_str_id',
+        ];
+        $missingKeys = array_keys(array_diff_key([
+            'product_id'         => 1,
+            'vibrant_text_color' => 1,
+            'text'               => 1,
+            'is_sticker'         => 1,
+            'type'               => 1,
+            'sticker_style'      => 1,
+            'was_text_edited'    => 1,
+            'tap_state'          => 1,
+            'tap_state_str_id'   => 1,
+        ], $productTagSticker));
 
         if (count($missingKeys)) {
-            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for product tag array.', implode(', ', $missingKeys)));
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for product tag sticker array.', implode(', ', $missingKeys)));
         }
 
         foreach ($productTagSticker as $k => $v) {
             switch ($k) {
                 case 'product_id':
                     if (!is_string($v) && !is_numeric($v)) {
-                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag array-key "%s".', $v, $k));
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag sticker array-key "%s".', $v, $k));
                     }
                     break;
                 case 'vibrant_text_color':
                     if (!$v || !is_string($v)) {
-                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag array-key "%s".', $v, $k));
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag sticker array-key "%s".', $v, $k));
                     }
                     break;
                 case 'text':
                     if (!$v || !is_string($v)) {
-                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag array-key "%s".', $v, $k));
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag sticker array-key "%s".', $v, $k));
                     }
                     break;
                 case 'is_sticker':
                     if (!is_bool($v)) {
-                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag array-key "%s".', $v, $k));
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for product tag sticker array-key "%s".', $v, $k));
                     }
                     break;
             }
         }
-        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($productTagSticker, array_flip($requiredKeys)), 'product tag');
+        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($productTagSticker, array_flip($requiredKeys)), 'product tag sticker');
     }
 
     /**
@@ -902,11 +922,23 @@ class Utils
     public static function throwIfInvalidStoryHashtagSticker(
         array $hashtag)
     {
-        $requiredKeys = ['tag_name', 'tap_state_str_id', 'is_sticker'];
+        $requiredKeys = [
+            'tag_name',
+            'tap_state_str_id',
+            'is_sticker',
+            'type',
+            'tap_state',
+        ];
 
-        $missingKeys = array_keys(array_diff_key(['tag_name' => 1, 'tap_state_str_id' => 1, 'is_sticker' => 1], $hashtag));
+        $missingKeys = array_keys(array_diff_key([
+            'tag_name'         => 1,
+            'tap_state_str_id' => 1,
+            'is_sticker'       => 1,
+            'type'             => 1,
+            'tap_state'        => 1,
+        ], $hashtag));
         if (count($missingKeys)) {
-            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for hashtag array.', implode(', ', $missingKeys)));
+            throw new \InvalidArgumentException(sprintf('Missing keys "%s" for hashtag sticker array.', implode(', ', $missingKeys)));
         }
 
         foreach ($hashtag as $k => $v) {
@@ -914,23 +946,23 @@ class Utils
                 case 'tag_name':
                     // Verify that this tag exists somewhere in the caption to check.
                     if (!$v || preg_match('/\s/', $v)) { // NOTE: UTF-8 aware.
-                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag sticker array-key "%s".', $v, $k));
                     }
                     break;
                 case 'tap_state_str_id':
                     // Verify that this tag exists somewhere in the caption to check.
                     if (!in_array($v, ['hashtag_sticker_subtle', 'hashtag_sticker_rainbow', 'hashtag_sticker_gradient'], true)) { // NOTE: UTF-8 aware.
-                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag sticker array-key "%s".', $v, $k));
                     }
                     break;
                 case 'is_sticker':
                     if (!is_bool($v)) {
-                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag array-key "%s".', $v, $k));
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for hashtag sticker array-key "%s".', $v, $k));
                     }
                     break;
             }
         }
-        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($hashtag, array_flip($requiredKeys)), 'hashtag');
+        self::_throwIfInvalidStoryStickerPlacement(array_diff_key($hashtag, array_flip($requiredKeys)), 'hashtag sticker');
     }
 
     /**
@@ -944,9 +976,23 @@ class Utils
     public static function throwIfInvalidStoryMentionSticker(
         array $mention)
     {
-        $requiredKeys = ['user_id', 'tap_state_str_id', 'is_sticker'];
+        $requiredKeys = [
+            'user_id',
+            'tap_state_str_id',
+            'is_sticker',
+            'type',
+            'display_type',
+            'tap_state',
+        ];
 
-        $missingKeys = array_keys(array_diff_key(['user_id' => 1, 'tap_state_str_id' => 1, 'is_sticker' => 1], $mention));
+        $missingKeys = array_keys(array_diff_key([
+            'user_id'          => 1,
+            'tap_state_str_id' => 1,
+            'is_sticker'       => 1,
+            'type'             => 1,
+            'display_type'     => 1,
+            'tap_state'        => 1,
+        ], $mention));
         if (count($missingKeys)) {
             throw new \InvalidArgumentException(sprintf('Missing keys "%s" for mention sticker array.', implode(', ', $missingKeys)));
         }
@@ -954,8 +1000,11 @@ class Utils
         foreach ($mention as $k => $v) {
             switch ($k) {
                 case 'user_id':
-                    if (!is_int($v) && !ctype_digit($v)) {
-                        throw new \InvalidArgumentException('User ID must be an integer.');
+                    if (!is_string($v)) {
+                        throw new \InvalidArgumentException('User ID must be an string.');
+                    }
+                    if (!is_numeric($v)) {
+                        throw new \InvalidArgumentException('User ID must be an numeric.');
                     }
                     if ($v < 0) {
                         throw new \InvalidArgumentException('User ID must be a positive integer.');
@@ -987,8 +1036,24 @@ class Utils
     public static function throwIfInvalidStoryLinkSticker(
         array $linkSticker)
     {
-        $requiredKeys = ['url', 'is_sticker'];
-        $missingKeys = array_keys(array_diff_key(['url' => 1, 'is_sticker' => 1], $linkSticker));
+        $requiredKeys = [
+            'url',
+            'is_sticker',
+            'type',
+            'link_type',
+            'selected_index',
+            'tap_state',
+            'tap_state_str_id',
+        ];
+        $missingKeys = array_keys(array_diff_key([
+            'url'              => 1,
+            'is_sticker'       => 1,
+            'type'             => 1,
+            'link_type'        => 1,
+            'selected_index'   => 1,
+            'tap_state'        => 1,
+            'tap_state_str_id' => 1,
+        ], $linkSticker));
 
         if (count($missingKeys)) {
             throw new \InvalidArgumentException(sprintf('Missing keys "%s" for story link array.', implode(', ', $missingKeys)));

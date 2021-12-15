@@ -371,6 +371,7 @@ class Internal extends RequestCollection
                         $storyMentionSticker['is_sticker'] = true;
                         $storyMentionSticker['display_type'] = 'mention_username';
                         $storyMentionSticker['tap_state'] = 0;
+                        $storyMentionSticker['user_id'] = (string)$storyMentionSticker['user_id'];
 
                         Utils::throwIfInvalidStoryMentionSticker($storyMentionSticker);
 
@@ -393,6 +394,7 @@ class Internal extends RequestCollection
                         ->addPost('client_timestamp', (string) (time() - mt_rand(3, 10)))
                     ;
                 }
+
                 if ($hashtags !== null && $captionText !== '') {
                     Utils::throwIfInvalidStoryHashtags($captionText, $hashtags);
                     $request
