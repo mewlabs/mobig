@@ -459,6 +459,10 @@ class Utils
             // this input contained top-level array keys containing the usertags.
             switch ($k) {
                 case 'in':
+                    if (count($v) > 20) {
+                        throw new \InvalidArgumentException('Exceeded max usertags count 20.');
+                    }
+
                     foreach ($v as $idx => $userTag) {
                         try {
                             self::throwIfInvalidUserTag($userTag);
@@ -526,6 +530,10 @@ class Utils
             // this input contained top-level array keys containing the product tags.
             switch ($k) {
                 case 'in':
+                    if (count($v) > 5) {
+                        throw new \InvalidArgumentException('Exceeded max product tags count 5.');
+                    }
+
                     // Check the array of product tags to insert.
                     foreach ($v as $idx => $productTag) {
                         try {

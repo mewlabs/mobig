@@ -365,6 +365,10 @@ class Internal extends RequestCollection
                 }
 
                 if ($storyMentionStickers !== null) {
+                    if (count($storyMentionStickers) > 10) {
+                        throw new \InvalidArgumentException('Exceeded max story mention stickers count 10.');
+                    }
+
                     foreach ($storyMentionStickers as $storyMentionSticker) {
                         $storyMentionSticker['rotation'] = 0.0;
                         $storyMentionSticker['type'] = 'mention';

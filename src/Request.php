@@ -620,7 +620,7 @@ class Request
         }
         // Sign POST data if needed.
         if ($this->_signedPost) {
-            $this->_posts = Signatures::signData($this->_posts, $this->_excludeSigned);
+            $this->_posts = Signatures::signData($this->_posts, $this->_excludeSigned, $this->_parent->device->getAppVersion());
         }
         // Switch between multipart (at least one file) or urlencoded body.
         if (!count($this->_files)) {
@@ -649,7 +649,7 @@ class Request
         }
         // Check signed request params flag.
         if ($this->_signedGet) {
-            $this->_params = Signatures::signData($this->_params);
+            $this->_params = Signatures::signData($this->_params, [], $this->_parent->device->getAppVersion());
         }
         // Generate the final endpoint URL, by adding any custom query params.
         if (count($this->_params)) {

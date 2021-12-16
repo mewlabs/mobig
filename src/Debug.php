@@ -120,7 +120,7 @@ class Debug
                 $dat = Utils::colouredString(($gzip ? 'DECODED ' : '') . 'DATA: ', 'yellow');
             }
 
-            echo $dat . urldecode(($gzip ? zlib_decode($post) : $post)) . "\n";
+            echo $dat . ($gzip ? zlib_decode($post) : $post) . "\n";
         }
     }
 }

@@ -186,6 +186,18 @@ class Device implements DeviceInterface
     // Getters for all properties...
 
     /** {@inheritdoc} */
+    public function setAppVersion($appVersion)
+    {
+        $this->_appVersion = $appVersion;
+    }
+
+    /** {@inheritdoc} */
+    public function getAppVersion()
+    {
+        return $this->_appVersion;
+    }
+
+    /** {@inheritdoc} */
     public function getDeviceString()
     {
         return $this->_deviceString;

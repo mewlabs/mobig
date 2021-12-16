@@ -5,6 +5,22 @@ namespace InstagramAPI\Devices;
 interface DeviceInterface
 {
     /**
+     * Get the device app version string.
+     *
+     * @return string
+     */
+    public function getAppVersion();
+
+    /**
+     * Set the device app version string.
+     *
+     * @param string $appVersion
+     *
+     * @return void
+     */
+    public function setAppVersion($appVersion);
+
+    /**
      * Get the device identity string.
      *
      * @return string
