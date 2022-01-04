@@ -97,7 +97,7 @@ class Internal extends RequestCollection
             );
         }
 
-        if (isset($externalMetadata['link']) && $targetFeed == Constants::FEED_STORY) {
+        if (isset($externalMetadata['story_link']) && $targetFeed == Constants::FEED_STORY) {
             $this->ig->creative->getUnlockableStickerNux();
         }
 
@@ -571,7 +571,7 @@ class Internal extends RequestCollection
             throw new \InvalidArgumentException(sprintf('Bad target feed "%s".', $targetFeed));
         }
 
-        if (isset($externalMetadata['link']) && $targetFeed == Constants::FEED_STORY) {
+        if (isset($externalMetadata['story_link']) && $targetFeed == Constants::FEED_STORY) {
             $this->ig->creative->getUnlockableStickerNux();
         }
 

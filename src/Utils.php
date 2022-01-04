@@ -1070,7 +1070,7 @@ class Utils
         foreach ($linkSticker as $k => $v) {
             switch ($k) {
                 case 'url':
-                    if (!is_string($v) || self::hasValidWebURLSyntax($v)) {
+                    if (!is_string($v) || !self::hasValidWebURLSyntax($v)) {
                         throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story link array-key "%s".', $v, $k));
                     }
                     break;
