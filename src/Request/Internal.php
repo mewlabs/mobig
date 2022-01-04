@@ -735,7 +735,7 @@ class Internal extends RequestCollection
         $locationSticker = (isset($externalMetadata['location_sticker']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['location_sticker'] : null;
         /** @var string|null Link to attach to the media. ONLY USED FOR STORY MEDIA,
          * AND YOU MUST HAVE A BUSINESS INSTAGRAM ACCOUNT TO POST A STORY LINK! */
-        $link = (isset($externalMetadata['link']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['link'] : null;
+        $storyLink = (isset($externalMetadata['story_link']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_link'] : null;
         /** @var array Hashtags to use for the media. ONLY STORY MEDIA! */
         $hashtags = (isset($externalMetadata['hashtags']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['hashtags'] : null;
         /** @var array Mentions to use for the media. ONLY STORY MEDIA! */
@@ -746,6 +746,12 @@ class Internal extends RequestCollection
         $attachedMedia = (isset($externalMetadata['attached_media']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['attached_media'] : null;
         /** @var array Title of the media uploaded to your channel. ONLY TV MEDIA! */
         $title = (isset($externalMetadata['title']) && $targetFeed == Constants::FEED_TV) ? $externalMetadata['title'] : null;
+        /** @var array Story Product Tags to use for the media. ONLY STORY MEDIA! */
+        $storyProductTagSticker = (isset($externalMetadata['story_product_tag_sticker']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_product_tag_sticker'] : null;
+        /** @var array Story Hashtag to use for the media. ONLY STORY MEDIA! */
+        $storyHashtagSticker = (isset($externalMetadata['story_hashtag_sticker']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_hashtag_sticker'] : null;
+        /** @var array Mentions to use for the media. ONLY STORY MEDIA! */
+        $storyMentionStickers = (isset($externalMetadata['story_mention_stickers']) && $targetFeed == Constants::FEED_STORY) ? $externalMetadata['story_mention_stickers'] : null;
 
         // Fix very bad external user-metadata values.
         if (!is_string($captionText)) {
@@ -793,30 +799,88 @@ class Internal extends RequestCollection
                     ->addPost('client_shared_at', time() - mt_rand(3, 10))
                     ->addPost('client_timestamp', time());
 
-                if (!empty($link) && is_string($link['link']) && Utils::hasValidWebURLSyntax($link['link'])) {
-                    $linkArray = [
-                        'x'                => $link['x'],
-                        'y'                => $link['y'],
-                        'z'                => 0,
-                        'width'            => $link['width'],
-                        'height'           => $link['height'],
-                        'rotation'         => 0.0,
-                        'type'             => 'story_link',
-                        'link_type'        => 'web',
-                        'url'              => $link['link'],
-                        'selected_index'   => 0,
-                        'is_sticker'       => true,
-                        'tap_state'        => 0,
-                        'tap_state_str_id' => 'link_sticker_default',
-                    ];
+                $stickers = [];
+                $stickersIds = [];
+
+                if ($storyLink !== null) {
+                    $storyLink['rotation'] = 0.0;
+                    $storyLink['type'] = 'story_link';
+                    $storyLink['link_type'] = 'web';
+                    $storyLink['selected_index'] = 0;
+                    $storyLink['is_sticker'] = true;
+                    $storyLink['tap_state'] = 0;
+                    $storyLink['tap_state_str_id'] = 'link_sticker_default';
+
+                    Utils::throwIfInvalidStoryLinkSticker($storyLink);
+
+                    $stickers[] = $storyLink;
+                    $stickersIds[] = 'link_sticker_default';
+                }
+
+                if ($storyProductTagSticker !== null) {
+                    $storyProductTagSticker['rotation'] = 0.0;
+                    $storyProductTagSticker['type'] = 'shopping_product';
+                    $storyProductTagSticker['sticker_style'] = 'product_item_text_sticker_vibrant';
+                    $storyProductTagSticker['was_text_edited'] = false;
+                    $storyProductTagSticker['is_sticker'] = true;
+                    $storyProductTagSticker['tap_state'] = 0;
+                    $storyProductTagSticker['tap_state_str_id'] = 'product_item_text_sticker_vibrant';
+                    $storyProductTagSticker['text'] = mb_strtoupper($storyProductTagSticker['text']);
+
+                    Utils::throwIfInvalidStoryProductTagSticker($storyProductTagSticker);
+
+                    $stickers[] = $storyProductTagSticker;
+                    $stickersIds[] = 'product_item_text_sticker_vibrant';
+                }
+
+                if ($storyHashtagSticker !== null) {
+                    $storyHashtagSticker['rotation'] = 0.0;
+                    $storyHashtagSticker['type'] = 'hashtag';
+                    $storyHashtagSticker['is_sticker'] = true;
+                    $storyHashtagSticker['tap_state'] = 0;
+                    $storyHashtagSticker['tag_name'] = mb_strtoupper($storyHashtagSticker['tag_name']);
+
+                    Utils::throwIfInvalidStoryHashtagSticker($storyHashtagSticker);
+
+                    $stickers[] = $storyHashtagSticker;
+                    $stickersIds[] = 'hashtag_sticker';
+                }
+
+                if ($storyMentionStickers !== null) {
+                    if (count($storyMentionStickers) > 10) {
+                        throw new \InvalidArgumentException('Exceeded max story mention stickers count 10.');
+                    }
+
+                    foreach ($storyMentionStickers as $storyMentionSticker) {
+                        $storyMentionSticker['rotation'] = 0.0;
+                        $storyMentionSticker['type'] = 'mention';
+                        $storyMentionSticker['is_sticker'] = true;
+                        $storyMentionSticker['display_type'] = 'mention_username';
+                        $storyMentionSticker['tap_state'] = 0;
+                        $storyMentionSticker['user_id'] = (string)$storyMentionSticker['user_id'];
+
+                        Utils::throwIfInvalidStoryMentionSticker($storyMentionSticker);
+
+                        $stickers[] = $storyMentionSticker;
+                        $stickersIds[] = 'mention_sticker';
+                    }
+                }
+
+                if ($stickers) {
+                    foreach ($stickers as $key => &$sticker) {
+                        $sticker['z'] = $key;
+                    }
+
+                    unset($sticker);
 
                     $request
-                        ->addPost('tap_models', json_encode([$linkArray], JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES))
-                        ->addPost('story_sticker_ids', 'link_sticker_default')
+                        ->addPost('tap_models', json_encode($stickers, JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES))
+                        ->addPost('story_sticker_ids', implode(',', $stickersIds))
                         ->addPost('client_shared_at', (string) time())
                         ->addPost('client_timestamp', (string) (time() - mt_rand(3, 10)))
                     ;
                 }
+
                 if ($hashtags !== null && $captionText !== '') {
                     Utils::throwIfInvalidStoryHashtags($captionText, $hashtags);
                     $request
