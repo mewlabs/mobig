@@ -1074,6 +1074,12 @@ class Utils
                         throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story link array-key "%s".', $v, $k));
                     }
                     break;
+                case 'tap_state_str_id':
+                    // Verify that this tag exists somewhere in the caption to check.
+                    if (!in_array($v, ['link_sticker_default', 'link_sticker_black_white', 'link_sticker_subtle'], true)) { // NOTE: UTF-8 aware.
+                        throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story link array-key "%s".', $v, $k));
+                    }
+                    break;
                 case 'is_sticker':
                     if (!is_bool($v)) {
                         throw new \InvalidArgumentException(sprintf('Invalid value "%s" for story link array-key "%s".', $v, $k));

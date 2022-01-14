@@ -327,12 +327,11 @@ class Internal extends RequestCollection
                     $storyLink['selected_index'] = 0;
                     $storyLink['is_sticker'] = true;
                     $storyLink['tap_state'] = 0;
-                    $storyLink['tap_state_str_id'] = 'link_sticker_default';
 
                     Utils::throwIfInvalidStoryLinkSticker($storyLink);
 
                     $stickers[] = $storyLink;
-                    $stickersIds[] = 'link_sticker_default';
+                    $stickersIds[] = $storyLink['tap_state_str_id'];
                 }
 
                 if ($storyProductTagSticker !== null) {
@@ -809,12 +808,11 @@ class Internal extends RequestCollection
                     $storyLink['selected_index'] = 0;
                     $storyLink['is_sticker'] = true;
                     $storyLink['tap_state'] = 0;
-                    $storyLink['tap_state_str_id'] = 'link_sticker_default';
 
                     Utils::throwIfInvalidStoryLinkSticker($storyLink);
 
                     $stickers[] = $storyLink;
-                    $stickersIds[] = 'link_sticker_default';
+                    $stickersIds[] = $storyLink['tap_state_str_id'];
                 }
 
                 if ($storyProductTagSticker !== null) {
