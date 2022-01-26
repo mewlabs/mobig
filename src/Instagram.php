@@ -560,6 +560,7 @@ class Instagram implements ExperimentsInterface
      * @throws \InstagramAPI\Exception\InstagramException
      *
      * @return \InstagramAPI\Response\LoginResponse
+     * @throws \RuntimeException
      */
     public function finishTwoFactorLogin(
         $username,
@@ -591,7 +592,7 @@ class Instagram implements ExperimentsInterface
         $response = $this->request('accounts/two_factor_login/')
             ->setNeedsAuth(false)
             // 1 - SMS, 2 - Messenger (?), 3 - TOTP, 0 - ??
-            ->addPost('verification_method', '1')
+            ->addPost('verification_method', strlen($verificationCode) === 8 ? '2' : '1')
             ->addPost('verification_code', $verificationCode)
             ->addPost('two_factor_identifier', $twoFactorIdentifier)
             ->addPost('_csrftoken', $this->client->getToken())
