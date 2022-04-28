@@ -497,7 +497,7 @@ class Instagram implements ExperimentsInterface
 
         // Perform a full relogin if necessary.
         if (!$this->isMaybeLoggedIn || $forceLogin) {
-            $this->_sendPreLoginFlow();
+//            $this->_sendPreLoginFlow();
 
             try {
                 $response = $this->request('accounts/login/')
@@ -516,10 +516,10 @@ class Instagram implements ExperimentsInterface
                     // Login failed because two-factor login is required.
                     // Return server response to tell user they need 2-factor.
                     return $e->getResponse();
-                } else {
-                    // Login failed for some other reason... Re-throw error.
-                    throw $e;
                 }
+
+                // Login failed for some other reason... Re-throw error.
+                throw $e;
             }
 
             $this->_updateLoginState($response);
@@ -1047,7 +1047,7 @@ class Instagram implements ExperimentsInterface
             // Perform the "user has just done a full login" API flow.
 //            $this->internal->sendLauncherSync(false);
 //            $this->internal->syncUserFeatures();
-            $this->timeline->getTimelineFeed(null, ['recovered_from_crash' => true]);
+//            $this->timeline->getTimelineFeed(null, ['recovered_from_crash' => true]);
 //            $this->story->getReelsTrayFeed();
 //            $this->discover->getSuggestedSearches('users');
 //            $this->discover->getRecentSearches();

@@ -113,8 +113,9 @@ class Device implements DeviceInterface
         $deviceString = null,
         $autoFallback = true)
     {
-        $this->_appVersion = $appVersion;
-        $this->_versionCode = $versionCode;
+        $this->setAppVersion($appVersion);
+        $this->setVersionCode($versionCode);
+
         $this->_userLocale = $userLocale;
 
         // Use the provided device if a valid good device. Otherwise use random.
@@ -198,6 +199,18 @@ class Device implements DeviceInterface
     }
 
     /** {@inheritdoc} */
+    public function setVersionCode($versionCode)
+    {
+        $this->_versionCode = $versionCode;
+    }
+
+    /** {@inheritdoc} */
+    public function getVersionCode()
+    {
+        return $this->_versionCode;
+    }
+
+    /** {@inheritdoc} */
     public function getDeviceString()
     {
         return $this->_deviceString;
@@ -212,6 +225,9 @@ class Device implements DeviceInterface
     /** {@inheritdoc} */
     public function setUserAgent($appVersion, $versionCode)
     {
+        $this->setAppVersion($appVersion);
+        $this->setVersionCode($versionCode);
+
         $this->_userAgent = UserAgent::buildUserAgent($appVersion, Constants::USER_AGENT_LOCALE, $this, $versionCode);
     }
 

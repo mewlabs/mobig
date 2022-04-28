@@ -21,6 +21,22 @@ interface DeviceInterface
     public function setAppVersion($appVersion);
 
     /**
+     * Get the device version code.
+     *
+     * @return string
+     */
+    public function getVersionCode();
+
+    /**
+     * Set the device version code.
+     *
+     * @param string $versionCode
+     *
+     * @return void
+     */
+    public function setVersionCode($versionCode);
+
+    /**
      * Get the device identity string.
      *
      * @return string

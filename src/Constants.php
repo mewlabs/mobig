@@ -12,6 +12,9 @@ class Constants
     const IG_VERSION = '64.0.0.14.96';
     const VERSION_CODE = '125398467';
 
+    const IG_VERSION_V135 = '135.0.0.28.119';
+    const VERSION_CODE_V206 = '206670926';
+
     const IG_VERSION_V209 = '209.0.0.0.58';
     const VERSION_CODE_V322 = '322418711';
 
@@ -110,4 +113,29 @@ class Constants
 
     // General Constants.
     const SRC_DIR = __DIR__; // Absolute path to the "src" folder.
+
+    /** @const array */
+    const X_BLOKS_VERSION_IDS = [
+        'a4133d45315981587e894655571231d55dfc135b78884619213116e1e19379d1',
+        '98f59367d36dbb989c89679096133e0aab7e8e1b47a30e7c78e9dd0d17cdf1ab',
+        'd8ace33b0694b8f33285d656b8144e0b12dc1dac40a38054c3c22a7672550f5c',
+        '6ce63b10e6d166fe1b833b215960ee376a9d5d38dc213c40143b6da6d6246ffd',
+        'f402956e987b86c09ee11e98835acea817822bd260a9a06f9847cc9dd118ed5e',
+        'f3c49022ca79d20791a121468a475073f8a3ca306f4fff9280bb14d61e1fb347',
+        '0e5dc0b9970ffc452602afb7e530944daa9a16c71932e1ba8d322bf84d48bb82',
+        '7ab39aa203b17c94cc6787d6cd9052d221683361875eee1e1bfe30b8e9debd74',
+        '46a86a3b003c17d41300790c0d599105b35f2ae5a8a4238051f2dff1f19d2316',
+        'e64770370706cb0f5f58260398fb5592f4679a12b61a5be4291af7f562331e5f',
+        '0a3ae4c88248863609c67e278f34af44673cff300bc76add965a9fb036bd3ca3',
+        'e2c538836b6f6fe9565c38de7d31e2b7694378d59c18a14d1ee35794257b9876',
+        '6221da983356759390a43e3d1239818a4801ae76e5199f0f1884a967e121e65d',
+        '26a634365122e53bf77c067906f6ba881f6595beb00c972dacc9bb74066afb0c',
+        '58b4f11df8b9db3edd395ca3d73f4b69067a08c0663b1957b6bb9b3c5db08840',
+    ];
+
+    /** @const array */
+    const BLOKS_VERSIONING_IDS = [
+        '26a634365122e53bf77c067906f6ba881f6595beb00c972dacc9bb74066afb0c',
+        '4cc9712a9d2bccf67ebfaa6673f5d8db5a2d220dc12cbc240e7ac573aa1670d3',
+    ];
 }
