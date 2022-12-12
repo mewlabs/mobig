@@ -10,7 +10,7 @@ use InstagramAPI\AutoPropertyMapper;
  * @method string getSectionId()
  * @method string getSectionType()
  * @method string getModuleName()
- * @method ProductListItemContent getLayoutContent()
+ * @method ProductFeedItemLayoutContent getLayoutContent()
  * @method bool isSectionId()
  * @method bool isSectionType()
  * @method bool isModuleName()
@@ -18,7 +18,7 @@ use InstagramAPI\AutoPropertyMapper;
  * @method $this setSectionId(string $value)
  * @method $this setSectionType(string $value)
  * @method $this setModuleName(string $value)
- * @method $this setLayoutContent(ProductListItemContent $value)
+ * @method $this setLayoutContent(ProductFeedItemLayoutContent $value)
  * @method $this unsetSectionId()
  * @method $this unsetSectionType()
  * @method $this unsetModuleName()
@@ -30,6 +30,6 @@ class ProductFeedItem extends AutoPropertyMapper
         'section_id'     => 'string',
         'section_type'   => 'string',
         'module_name'    => 'string',
-        'layout_content' => 'ProductListItemContent',
+        'layout_content' => 'ProductFeedItemLayoutContent',
     ];
 }
