@@ -1359,8 +1359,8 @@ class Utils
     {
         // Test write-permissions for the folder and create/fix if necessary.
         if ((is_dir($folder) && is_writable($folder))
-            || (!is_dir($folder) && mkdir($folder, 0755, true))
-            || chmod($folder, 0755)) {
+            || (!is_dir($folder) && mkdir($folder, 0777, true))
+            || chmod($folder, 0777)) {
             return true;
         } else {
             return false;
